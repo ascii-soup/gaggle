@@ -4,6 +4,8 @@
  */
 namespace AsciiSoup\Gaggle;
 
+use Hamcrest\Matcher;
+
 class Vector extends Collection
 {
     /**
@@ -61,13 +63,29 @@ class Vector extends Collection
      *
      * e.g.   function remove_odd_numbers($item) { return $item % 2 == 0; }
      *
-     * @param callable $callback
+     * The callback can also be a Hamcrest matcher
+     *
+     * https://github.com/hamcrest/hamcrest-php
+     * or
+     * https://code.google.com/archive/p/hamcrest/wikis/TutorialPHP.wiki
+     *
+     * @param callable|Matcher $callback
      * @return Vector
      */
     public function filter($callback)
     {
+        if ($callback instanceof Matcher) {
+            $actualCallback = function($item) use($callback) {
+                return $callback->matches($item);
+            };
+        } elseif ( ! is_callable($callback)) {
+            throw new \InvalidArgumentException("$callback must be a Hamcrest matcher or a valid callable");
+        } else {
+            $actualCallback = $callback;
+        }
+
         return new self(
-            array_filter($this->items(), $callback)
+            array_filter($this->items(), $actualCallback)
         );
     }
 
@@ -79,7 +97,7 @@ class Vector extends Collection
      * and return the modified item
      *
      * e.g. function multiply_by_two($item) { return $item * 2; }
-     * 
+     *
      * @param callable $callback
      * @return Vector
      */

@@ -92,6 +92,18 @@ class VectorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    function it_can_be_filtered_with_hamcrest_matchers()
+    {
+        $vector = new Vector(array("Hello", "Hello there", "Goodbye"));
+
+        $filteredVector = $vector->filter(startsWith("Hello"));
+
+        assertThat($filteredVector->asArray(), is(arrayContaining("Hello", "Hello there")));
+    }
+
+    /**
+     * @test
+     */
     function it_can_be_mapped()
     {
         $vector = new Vector(array(1, 2, 3, 4, 5));
@@ -101,5 +113,42 @@ class VectorTest extends \PHPUnit_Framework_TestCase
         });
 
         assertThat($mappedVector->asArray(), is(arrayContaining(2, 4, 6, 8, 10)));
+    }
+
+    /**
+     * @test
+     */
+    function it_can_be_iterated()
+    {
+        $total = 0;
+        $vector = new Vector(array(1, 2, 3));
+
+        foreach ($vector as $item) {
+            $total += $item;
+        }
+
+        assertThat($total, is(equalTo(6)));
+    }
+
+    /**
+     * @test
+     */
+    function it_supports_bracket_notation_for_reads()
+    {
+        $vector = new Vector(array(1, 2, 3));
+
+        assertThat($vector[0], is(equalTo(1)));
+    }
+
+    /**
+     * @test
+     */
+    function it_doesnt_support_bracket_notation_for_writes()
+    {
+        $vector = new Vector(array(1, 2, 3));
+
+        $this->setExpectedException('AsciiSoup\\Gaggle\\Exception\\MutateOperationsNotAllowed');
+
+        $vector[0] = 5;
     }
 }
