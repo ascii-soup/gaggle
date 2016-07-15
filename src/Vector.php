@@ -74,11 +74,7 @@ class Vector extends Collection
      */
     public function filter($callback)
     {
-        if ($callback instanceof Matcher) {
-            $actualCallback = function($item) use($callback) {
-                return $callback->matches($item);
-            };
-        } elseif ( ! is_callable($callback)) {
+        if ( ! is_callable($callback)) {
             throw new \InvalidArgumentException("$callback must be a Hamcrest matcher or a valid callable");
         } else {
             $actualCallback = $callback;
@@ -106,5 +102,23 @@ class Vector extends Collection
         return new self(
             array_map($callback, $this->items())
         );
+    }
+
+    /**
+     * Reduce the collection to a single value
+     * using a callback.
+     *
+     * The callback should take two arguments - the current item
+     * and the current value of the reduce operation
+     *
+     * e.g. function add_together($item, $value) { return $item + $value; }
+     * 
+     * @param callable $callback
+     * @param mixed|null $initial
+     * @return mixed
+     */
+    public function reduce($callback, $initial = null)
+    {
+        return array_reduce($this->items(), $callback, $initial);
     }
 }

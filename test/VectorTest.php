@@ -151,4 +151,18 @@ class VectorTest extends \PHPUnit_Framework_TestCase
 
         $vector[0] = 5;
     }
+
+    /**
+     * @test
+     */
+    function it_can_be_reduced()
+    {
+        $vector = new Vector(array(1, 2, 3));
+
+        $reducedValue = $vector->reduce(function($item, $value) {
+            return $item + $value;
+        }, 0);
+
+        assertThat($reducedValue, is(equalTo(6)));
+    }
 }
