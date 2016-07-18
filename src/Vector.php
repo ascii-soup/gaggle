@@ -125,4 +125,17 @@ class Vector extends Collection
     {
         return array_reduce($this->items(), $callback, $initial);
     }
+
+    public function contains($item)
+    {
+        $needles = func_get_args();
+
+        foreach ($needles as $needle) {
+            if ( ! in_array($needle, $this->items())) {
+                 return false;
+            }
+        }
+
+        return true;
+    }
 }

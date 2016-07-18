@@ -159,10 +159,44 @@ class VectorTest extends \PHPUnit_Framework_TestCase
     {
         $vector = new Vector(array(1, 2, 3));
 
-        $reducedValue = $vector->reduce(function($item, $value) {
-            return $item + $value;
-        }, 0);
+        $reducedValue = $vector->reduce(
+            function($item, $value) { return $item + $value; },
+            0
+        );
 
         assertThat($reducedValue, is(equalTo(6)));
+    }
+
+    /**
+     * @test
+     */
+    function it_can_tell_you_if_it_contains_a_specified_item()
+    {
+        $vector = new Vector(array(1, 2, 3));
+
+        assertThat($vector->contains(2), is(true));
+    }
+
+    /**
+     * @test
+     */
+    function it_can_tell_you_if_it_contains_multiple_specified_items()
+    {
+        $vector = new Vector(array(1, 2, 3));
+
+        assertThat($vector->contains(2, 3), is(true));
+    }
+
+    /**
+     * @test
+     */
+    function it_can_tell_you_if_it_contains_a_specific_object()
+    {
+        $foo = new \stdClass();
+        $foo->hello = 'Hello, World';
+
+        $vector = new Vector(array($foo));
+        
+        assertThat($vector->contains($foo), is(true));
     }
 }
