@@ -74,7 +74,7 @@ class Vector extends Collection
      */
     public function filter($callback)
     {
-        if ($callback instanceof Matcher) {
+        if (class_exists('\Hamcrest\Matcher') && ($callback instanceof Matcher)) {
             $actualCallback = function ($item) use ($callback) {
                 return $callback->matches($item);
             };

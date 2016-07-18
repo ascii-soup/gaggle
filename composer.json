@@ -15,9 +15,10 @@
     }
   },
 
-  "require": {
+  "suggest": {
     "hamcrest/hamcrest-php": "2.0.*"
   },
+  
   "require-dev": {
     "phpunit/phpunit": "^3.0"
   }
