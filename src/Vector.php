@@ -74,7 +74,11 @@ class Vector extends Collection
      */
     public function filter($callback)
     {
-        if ( ! is_callable($callback)) {
+        if ($callback instanceof Matcher) {
+            $actualCallback = function ($item) use ($callback) {
+                return $callback->matches($item);
+            };
+        } elseif (!is_callable($callback)) {
             throw new \InvalidArgumentException("$callback must be a Hamcrest matcher or a valid callable");
         } else {
             $actualCallback = $callback;
@@ -112,7 +116,7 @@ class Vector extends Collection
      * and the current value of the reduce operation
      *
      * e.g. function add_together($item, $value) { return $item + $value; }
-     * 
+     *
      * @param callable $callback
      * @param mixed|null $initial
      * @return mixed
